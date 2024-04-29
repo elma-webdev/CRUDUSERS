@@ -1,0 +1,20 @@
+nav{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 2rem 2rem;
+}
+nav ul{
+    display: flex;
+    gap: 2rem;
+}
+.new-btn{
+    font-weight: bold;
+    border:1px solid white;
+    padding: 0.5rem 1rem;
+    border-radius:1rem;
+    background-color:green;
+}
+nav h2 a{
+    color:green;
+}
