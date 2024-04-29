@@ -1,0 +1,82 @@
+// MODULE ROUTER.JS
+const {Router}=require('express')
+const router= new Router()
+const controllerpessoa=require('./controller/controllerpessoa')
+router.post('/post', controllerpessoa.Create)
+router.get('/getall', controllerpessoa.GetAll)
+router.get('/getall/:id', controllerpessoa.Get)
+router.put('/put/:id', controllerpessoa.Update)
+router.delete('/delete/:id', controllerpessoa.Delete)
+module.exports=router
+
+//MODULE CONTROLLER
+const pessoas=require('../model/modelpessoas')
+   module.exports={ 
+   async Create(req, res){
+    
+    const {nome, idade, sexo, salario, morada}=req.body
+    try{
+         const pessoa=await pessoas.create({nome, idade, sexo, salario, morada})
+       return res.json({"message":"dados criados", pessoa})
+    }
+    catch(error){
+        console.log("nao eh possivel criar registros", error)}
+    },
+    
+    async GetAll(req, res){
+        try{
+            const Everyperson=await pessoas.find().sort({nome:1})
+            return res.json(Everyperson)
+        }catch(error){
+            console.log('nao foi possivel mostrar os registros', error)
+        }
+    },
+    async Get(req, res){
+        const {id}=req.params
+        try{
+            const Everyperson=await pessoas.findById({_id:id})
+            return res.json(Everyperson)
+        }catch(error){
+            console.log('nao foi possivel mostrar os registros', error)}
+    },
+    
+    async Update (req, res){
+        const {id}=req.params
+        try{
+          const {nome, idade, sexo, salario, morada}=req.body
+        const pessoa=await pessoas.findByIdAndUpdate(id,{nome, idade, sexo, salario, morada})  
+        return res.json(pessoa)
+        }
+        catch(error){
+            console.log('nao foi possivel actaulizar os registros', error)}
+        
+    },
+    async Delete(req, res){
+        const {id}=req.params
+        try{
+            const pessoa= await pessoas.findByIdAndDelete({_id:id})
+            return res.json({message:"dados apagados"})
+        }
+        catch(error){
+            console.log('nao foi possivel apagar os registros', error)}
+    }
+}
+
+
+//MODULE MODEL MONGOOSE
+const mongoose=require('../connection')
+ const pessoaSchema=new mongoose.Schema({
+    nome:{
+      type: String,
+      capitalize:true 
+    },
+    idade:Number,
+    sexo:{
+        type:String
+    },
+    salario:Number,
+    morada:String
+ }, {timestamps:true})
+
+const pessoas=mongoose.model("pessoa", pessoaSchema)
+ module.exports=pessoas
